@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Command } from 'commander';
 import { analyzeCode } from './analyzer';
 import { reviewDiff } from './diff';

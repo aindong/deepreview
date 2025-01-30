@@ -1,16 +1,31 @@
 {
   "name": "deepreview",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon --watch src --exec ts-node src/index.ts",
-    "build": "tsc"
+  "description": "AI-powered CLI for code reviews and PR generation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "code-reviewer": "./dist/index.js"
   },
-  "keywords": [],
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "dist/**/*",
+    "src/interfaces.d.ts"
+  ],
+  "keywords": [
+    "ai",
+    "code-review",
+    "cli",
+    "git",
+    "pull-request"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@types/node": "^22.12.0",
     "axios": "^1.7.9",
