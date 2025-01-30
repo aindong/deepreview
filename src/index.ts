@@ -7,6 +7,7 @@ import 'dotenv/config';
 import { readFile } from 'fs/promises';
 import { generatePRDescription } from './pr-generator';
 import { streamAiResponse } from './deepseek';
+import { setupCommand } from './setup';
 
 const program = new Command();
 
@@ -70,6 +71,18 @@ program
       });
     } catch (error) {
       console.error('Error:', error instanceof Error ? error.message : 'Unknown error');
+      process.exit(1);
+    }
+  });
+
+program
+  .command('setup')
+  .description('Initial configuration setup')
+  .action(async () => {
+    try {
+      await setupCommand();
+    } catch (error) {
+      console.error('Setup failed:', error instanceof Error ? error.message : 'Unknown error');
       process.exit(1);
     }
   });
