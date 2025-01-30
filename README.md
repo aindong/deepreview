@@ -5,7 +5,7 @@
 
 A intelligent CLI tool that leverages AI for code analysis, pull request generation, and interactive code reviews.
 
-![Demo](./demo.gif)
+![Demo](https://github.com/aindong/deepreview/blob/main/demo.gif)
 
 ## Features ✨
 - AI Code Analysis - Get detailed feedback on code quality and potential improvements
