@@ -39,7 +39,11 @@ Template:
 ${template}
 
 Review Summary:
-${comments}`;
+${comments}
+
+No need to add or do code review or anything else, just generate the PR description. 
+Make sure to explain the changes in detail and any potential issues inside the PR description.
+`;
 
   return streamAiResponse(prompt, '', (chunk) => {
     process.stdout.write(chunk);
