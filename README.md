@@ -1,6 +1,8 @@
 ## AI-Powered Code Review CLI 🛠️
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 [![Publish Package](https://github.com/aindong/deepreview/actions/workflows/publish.yml/badge.svg)](https://github.com/aindong/deepreview/actions/workflows/publish.yml)
+[![npm version](https://img.shields.io/npm/v/deepreview)](https://www.npmjs.com/package/deepreview)
+
 A intelligent CLI tool that leverages AI for code analysis, pull request generation, and interactive code reviews.
 
 ## Features ✨
@@ -22,11 +24,27 @@ After installation, run:
 deepreview setup
 ```
 
-You'll be prompted to enter your OpenAI/DeepSeek API key. This will be stored securely in your home directory at `~/.deepreview/.env`.
-
-To update your API key later:
+To update your API key later, just run again:
 ```bash
 deepreview setup
+```
+
+## Configuration ⚙️
+
+Customize your CLI behavior with:
+
+```bash
+deepreview setup
+```
+
+Available settings:
+- API Key (required)
+- Base URL (default: OpenAI's endpoint)
+- Default Model (gpt-4o, gpt-4, gpt-3.5-turbo, deepseek-chat, deepseek-reasoner)
+
+View current config:
+```bash
+deepreview config
 ```
 
 ## Usage 🚀

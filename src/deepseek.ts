@@ -1,15 +1,22 @@
 import OpenAI from 'openai';
 import { CodeReviewComments } from './interfaces';
 import { parseAiResponse } from './parser';
-import { getApiKey } from './config';
+import { getApiKey, getConfig } from './config';
 
 let client: OpenAI | null = null;
+let defaultModel = 'gpt-4o';
 
 async function getClient(): Promise<OpenAI> {
   if (!client) {
+    const { apiKey, baseUrl, model } = await getConfig();
+    defaultModel = model || 'gpt-4o';
+    
     client = new OpenAI({
-      apiKey: await getApiKey(),
-      // baseURL: 'https://api.deepseek.com' // Uncomment if using DeepSeek
+      apiKey,
+      baseURL: baseUrl,
+      defaultHeaders: {
+        'User-Agent': 'DeepReview-CLI/1.0'
+      }
     });
   }
   return client;
@@ -21,7 +28,7 @@ export async function queryLLM(prompt: string, code: string): Promise<string> {
   try {
     const openai = await getClient();
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: defaultModel,
       messages: [
         {
           role: "system",
@@ -59,7 +66,7 @@ export async function streamAiResponse(
     const openapi = await getClient();
     const content = code ? `${prompt}\n\nCode:\n\`\`\`\n${code}\n\`\`\`` : prompt;
     const stream = await openapi.chat.completions.create({
-      model: "gpt-4o",
+      model: defaultModel,
       messages: [
         {
           role: "system",

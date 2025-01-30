@@ -9,7 +9,9 @@ const CONFIG_DIR = path.join(homedir(), '.config', 'deepreview');
 const CONFIG_PATH = path.join(CONFIG_DIR, 'config.json');
 
 interface Config {
-  apiKey?: string;
+  apiKey: string;
+  baseUrl?: string;
+  model?: string;
 }
 
 export async function getApiKey(): Promise<string> {
@@ -28,24 +30,19 @@ export async function getApiKey(): Promise<string> {
 
 async function readConfig(): Promise<Config> {
   if (!existsSync(CONFIG_PATH)) {
-    return {};
+    return { apiKey: '' };
   }
   
   const content = await readFile(CONFIG_PATH, 'utf-8');
   return JSON.parse(content);
 }
 
-export async function writeConfig(apiKey: string): Promise<void> {
-  // Store in system keychain
-  await keytar.setPassword(SERVICE_NAME, 'apiKey', apiKey);
+export async function writeConfig(config: Config): Promise<void> {
+  await keytar.setPassword(SERVICE_NAME, 'apiKey', config.apiKey);
   
-  // Write empty config file for metadata
-  if (!existsSync(CONFIG_DIR)) {
-    mkdirSync(CONFIG_DIR, { recursive: true });
-    chmodSync(CONFIG_DIR, 0o700);
-  }
-  await writeFile(CONFIG_PATH, JSON.stringify({}, null, 2));
-  chmodSync(CONFIG_PATH, 0o600);
+  // Store other config in JSON
+  const { apiKey: _, ...restConfig } = config;
+  await writeFile(CONFIG_PATH, JSON.stringify(restConfig, null, 2));
 }
 
 export async function deleteConfig(): Promise<void> {
@@ -55,4 +52,13 @@ export async function deleteConfig(): Promise<void> {
   } catch (error) {
     console.error('Cleanup error:', error instanceof Error ? error.message : 'Unknown error');
   }
+}
+
+export async function getConfig(): Promise<Config> {
+  const apiKey = await getApiKey();
+  const fileConfig = await readConfig();
+  return {
+    ...fileConfig,
+    apiKey
+  };
 } 

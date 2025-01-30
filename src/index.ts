@@ -8,6 +8,7 @@ import { readFile } from 'fs/promises';
 import { generatePRDescription } from './pr-generator';
 import { streamAiResponse } from './deepseek';
 import { setupCommand } from './setup';
+import { getConfig } from './config';
 
 const program = new Command();
 
@@ -84,6 +85,21 @@ program
     } catch (error) {
       console.error('Setup failed:', error instanceof Error ? error.message : 'Unknown error');
       process.exit(1);
+    }
+  });
+
+program
+  .command('config')
+  .description('View current configuration')
+  .action(async () => {
+    try {
+      const config = await getConfig();
+      console.log('Current configuration:');
+      console.log(`- API Key: ${config.apiKey ? '*****' + config.apiKey.slice(-4) : 'Not set'}`);
+      console.log(`- Base URL: ${config.baseUrl || 'Default'}`);
+      console.log(`- Model: ${config.model || 'gpt-4o'}`);
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : 'Unknown error');
     }
   });
 
