@@ -1,19 +1,31 @@
-## Click Up Task(s)
-<!-- Please list out all CU tickets that this PR covers. -->
+<!--
+⚠️ 🚨 ⚠️  STOP AND READ THIS ⚠️ 🚨 ⚠️
 
-## Notes
-<!-- Provide reviewers with notes on implementation  -->
+👆👆 check the 'base' dropdown above is the correct branch
 
-## Visuals
-<!-- Screenshots, videos that give context for before and/or after the pull requests changes -->
+click the 'Preview' tab above to see what this will look like when submitted
 
-## PR dependencies
-<!-- Please link any PRs that need to be merged before/after this PR -->
+I have done the following prior to submitting this PR:
+ ✔️ My code follows the style guidelines of this project
+ ✔️ I have commented my code, particularly in hard-to-understand areas
+ ✔️ I have made corresponding changes to the documentation and/or noted it below
+ ✔️ My changes generate no new linter errors and few or no warnings
+ ✔️ New and existing unit tests all pass
 
-## Pre/Post deployment tasks
-<!-- List any tasks that need to be completed before and/or after the code is merged -->
+ ✔️ I have selected at least 1 team member to perform code review
+ ✔️ The title for this PR follows the conventional commits format
+ ✔️ I have added any required details below
+-->
 
-## Supporting Documentation
-<!-- Any links to documentation that supports the changes and could be helpful to the reviewer .-->
+### Summary of PR:
+<!-- Please include a summary of the updates in this PR here -->
 
-<!-- For more details please see our best practices here: <bookstack link> -->
+### This PR Contains:
+<!-- Place an x in the brackets to check the box for submission -->
+<!-- - [x] it should look like this if the box is checked, see the preview tab above -->
+- [ ] changes that require documentation updates
+- [ ] env variables changes
+- [ ] Breaking Changes to existing functionality
+- [ ] Requires installing of new dependencies
+
+Please list/explain any changes marked above:
