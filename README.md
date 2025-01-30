@@ -1,6 +1,6 @@
 ## AI-Powered Code Review CLI 🛠️
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Node.js CI](https://github.com/yourusername/deepreview/actions/workflows/node.js.yml/badge.svg)
+![Node.js CI](https://github.com/aindong/deepreview/actions/workflows/node.js.yml/badge.svg)
 A intelligent CLI tool that leverages AI for code analysis, pull request generation, and interactive code reviews.
 
 ## Features ✨
