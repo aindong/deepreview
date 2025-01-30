@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { analyzeCode } from './analyzer';
 import { reviewDiff } from './diff';
 import 'dotenv/config';
+import { readFile } from 'fs/promises';
 
 const program = new Command();
 
@@ -35,7 +36,7 @@ program
   .command('review-diff <diff>')
   .description('Review a Git diff string')
   .action(async (diff) => {
-    const results = await reviewDiff(diff);
+    const results = await reviewDiff(diff, 'typescript');
     console.log(results);
   });
 
