@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "code-reviewer": "./dist/index.js"
+    "deepreview": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc && cp src/cleanup.ts dist/cleanup.js",

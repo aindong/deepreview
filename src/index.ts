@@ -9,18 +9,77 @@ import { generatePRDescription } from './pr-generator';
 import { streamAiResponse } from './deepseek';
 import { setupCommand } from './setup';
 import { getConfig } from './config';
+import packageJson from '../package.json';
 
 const program = new Command();
 
 program
-  .name('deepseek-reviewer')
-  .description('CLI for AI-powered code reviews using DeepSeek R1')
-  .version('0.1.0');
+  .name('deepreview')
+  .description('AI-powered code review CLI')
+  .usage('[command] [options]')
+  .version(packageJson.version)
+  .configureHelp({
+    sortSubcommands: true,
+    subcommandTerm: (cmd) => cmd.name() + (cmd.usage() ? ' ' + cmd.usage() : ''),
+    commandDescription: (cmd) => cmd.description(),
+    formatHelp: (cmd, helper) => {
+      return [
+        `Usage: ${helper.commandUsage(cmd)}`,
+        '',
+        'Commands:',
+        helper.visibleCommands(cmd).map(subcmd => 
+          `  ${subcmd.name().padEnd(15)} ${subcmd.description()}`
+        ).join('\n'),
+        '',
+        'Options:',
+        helper.visibleOptions(cmd).map(option => 
+          `  ${option.flags.padEnd(25)} ${option.description}`
+        ).join('\n'),
+        '',
+        `Run 'deepreview help <command>' for more information on specific commands`
+      ].join('\n');
+    }
+  })
+  .addHelpText('after', `
+Examples:
+  $ deepreview analyze src/ --format json
+  $ git diff | deepreview review-diff -
+  $ deepreview setup
+  $ deepreview review src/file.ts
+  `)
+  .showHelpAfterError('(add --help for additional information)')
+  .showSuggestionAfterError();
+
+program.configureHelp({
+  sortSubcommands: true,
+  subcommandTerm: (cmd) => cmd.name() + (cmd.usage() ? ' ' + cmd.usage() : ''),
+  commandDescription: (cmd) => cmd.description(),
+  optionDescription: (opt) => opt.description,
+  visibleOptions: (cmd) => cmd.options.filter(option => !('hidden' in option && option.hidden)),
+  visibleCommands: (cmd) => cmd.commands.filter(c => !('hidden' in c && c.hidden)),
+  
+  formatHelp: (cmd, helper) => {
+    return [
+      helper.commandUsage(cmd),
+      '',
+      helper.commandDescription(cmd),
+      '',
+      helper.visibleOptions(cmd).map(option => {
+        return `  ${option.flags}${option.description ? ' - ' + option.description : ''}`;
+      }).join('\n'),
+      '',
+      ...helper.visibleCommands(cmd).map(subcmd => {
+        return `  ${helper.subcommandTerm(subcmd)}${subcmd.description ? ' - ' + subcmd.description : ''}`;
+      })
+    ].join('\n');
+  }
+});
 
 // Analyze a single file or directory
 program
   .command('analyze <path>')
   .description('Analyze code for improvements')
+  .usage('<path> [options]')
   .option('--format <format>', 'Output format (text, json)', 'text')
   .action(async (path, options) => {
     const results = await analyzeCode(path);
@@ -41,6 +100,7 @@ program
 program
   .command('review-diff <diff>')
   .description('Review a Git diff string')
+  .usage('<diff>')
   .action(async (diff) => {
     const results = await reviewDiff(diff, 'typescript');
     console.log(results);
@@ -49,6 +109,7 @@ program
 program
   .command('generate-pr')
   .description('Generate PR description from template and code analysis')
+  .usage('[options]')
   .option('-d, --diff <diff>', 'Git diff to analyze (use - for stdin)', '-')
   .action(async (options) => {
     try {
@@ -63,6 +124,7 @@ program
 program
   .command('review <file>')
   .description('Perform interactive code review with AI feedback')
+  .usage('<file>')
   .action(async (file) => {
     try {
       const code = await readFile(file, 'utf-8');
@@ -79,6 +141,7 @@ program
 program
   .command('setup')
   .description('Initial configuration setup')
+  .usage('')
   .action(async () => {
     try {
       await setupCommand();
@@ -91,6 +154,7 @@ program
 program
   .command('config')
   .description('View current configuration')
+  .usage('')
   .action(async () => {
     try {
       const config = await getConfig();
@@ -101,6 +165,14 @@ program
     } catch (error) {
       console.error('Error:', error instanceof Error ? error.message : 'Unknown error');
     }
+  });
+
+// Handle unknown commands
+program
+  .arguments('[command]')
+  .action((command) => {
+    console.error(`Unknown command: ${command}\n`);
+    program.help();
   });
 
 async function getDiffContent(diffInput: string): Promise<string> {
@@ -117,3 +189,8 @@ async function getDiffContent(diffInput: string): Promise<string> {
 }
 
 program.parse(process.argv);
+
+// Show help when no commands
+if (process.argv.length < 3) {
+  program.help();
+}
