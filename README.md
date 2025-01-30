@@ -73,3 +73,25 @@ Add your OpenAI API key to .env:
 ```
 AI_API_KEY=your_api_key_here
 ```
+
+## Security 🔒
+
+- API keys are stored in your system's secure credential storage:
+  - macOS: Keychain
+  - Windows: Credential Vault
+  - Linux: libsecret
+- No sensitive data is stored in plain text files
+- Uninstalling will automatically remove all credentials
+
+### This implementation:
+1. Uses OS-native secure credential storage
+2. Doesn't store API keys in plain text
+3. Automatically cleans up on uninstall
+4. Falls back to .env for development
+5. Maintains strict file permissions for any metadata files
+
+The key benefits:
+- Credentials are encrypted at rest by the OS
+- Other applications can't access the credentials
+- No manual file permission management needed
+- Automatic cleanup when uninstalling

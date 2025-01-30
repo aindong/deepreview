@@ -1,8 +1,10 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'path';
 import { homedir } from 'node:os';
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, chmodSync, rmSync } from 'node:fs';
+import keytar from 'keytar';
 
+const SERVICE_NAME = 'DeepReviewCLI';
 const CONFIG_DIR = path.join(homedir(), '.config', 'deepreview');
 const CONFIG_PATH = path.join(CONFIG_DIR, 'config.json');
 
@@ -16,16 +18,12 @@ export async function getApiKey(): Promise<string> {
     return process.env.AI_API_KEY;
   }
 
-  // Load from user config
-  try {
-    const config = await readConfig();
-    if (!config.apiKey) {
-      throw new Error('API key not configured');
-    }
-    return config.apiKey;
-  } catch (error) {
-    throw new Error(`Failed to load API key: ${error instanceof Error ? error.message : 'Unknown error'}\nRun 'deepreview setup' to configure.`);
+  // Get from system keychain
+  const apiKey = await keytar.getPassword(SERVICE_NAME, 'apiKey');
+  if (!apiKey) {
+    throw new Error('API key not configured\nRun \'deepreview setup\' to configure.');
   }
+  return apiKey;
 }
 
 async function readConfig(): Promise<Config> {
@@ -37,9 +35,24 @@ async function readConfig(): Promise<Config> {
   return JSON.parse(content);
 }
 
-export async function writeConfig(config: Config): Promise<void> {
+export async function writeConfig(apiKey: string): Promise<void> {
+  // Store in system keychain
+  await keytar.setPassword(SERVICE_NAME, 'apiKey', apiKey);
+  
+  // Write empty config file for metadata
   if (!existsSync(CONFIG_DIR)) {
     mkdirSync(CONFIG_DIR, { recursive: true });
+    chmodSync(CONFIG_DIR, 0o700);
   }
-  await writeFile(CONFIG_PATH, JSON.stringify(config, null, 2));
+  await writeFile(CONFIG_PATH, JSON.stringify({}, null, 2));
+  chmodSync(CONFIG_PATH, 0o600);
+}
+
+export async function deleteConfig(): Promise<void> {
+  try {
+    await keytar.deletePassword(SERVICE_NAME, 'apiKey');
+    rmSync(CONFIG_DIR, { recursive: true, force: true });
+  } catch (error) {
+    console.error('Cleanup error:', error instanceof Error ? error.message : 'Unknown error');
+  }
 } 

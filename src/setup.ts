@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { getApiKey, writeConfig } from './config';
+import { getApiKey, writeConfig, deleteConfig } from './config';
 
 export async function setupCommand() {
   console.log('Welcome to DeepReview! Let\'s get you set up.\n');
@@ -36,8 +36,8 @@ export async function setupCommand() {
       validate: input => !!input.trim() || 'API key is required'
     }]);
 
-    // Write to config file
-    await writeConfig({ apiKey });
+    // Write to system keychain
+    await writeConfig(apiKey);
     console.log('\n✅ Configuration saved successfully!');
 
   } catch (error) {

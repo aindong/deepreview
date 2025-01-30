@@ -9,11 +9,12 @@
     "code-reviewer": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp src/cleanup.ts dist/cleanup.js",
     "dev": "ts-node src/index.ts",
     "prepublishOnly": "npm run build",
     "release": "standard-version && git push --follow-tags origin main",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postuninstall": "node ./dist/cleanup.js"
   },
   "files": [
     "dist/**/*",
@@ -42,6 +43,7 @@
     "envfile": "^7.1.0",
     "fs-extra": "^11.3.0",
     "inquirer": "^12.3.3",
+    "keytar": "^7.9.0",
     "openai": "^4.81.0"
   }
 }
