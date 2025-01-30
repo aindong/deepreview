@@ -1,18 +1,15 @@
 import { CodeSuggestion, ProgrammingLanguage } from './interfaces';
 import { queryLLM, streamAiResponse } from './deepseek';
 
-export async function reviewDiff(diff: string, programmingLanguage: ProgrammingLanguage): Promise<CodeSuggestion[]> {
+export async function reviewDiff(diff: string, programmingLanguage: ProgrammingLanguage): Promise<string> {
   const prompt = `Review this Git diff for:
 1. Code quality issues
 2. Possible bugs
 3. Style violations
 
-The code is written in ${programmingLanguage}.
-Return suggestions as JSON array with this structure:
-`;
+The code is written in ${programmingLanguage}.`;
   
-  const response = await queryLLM(prompt, diff);
-  return parseDiffResponse(response);
+  return queryLLM(prompt, diff);
 }
 
 function parseDiffResponse(response: string): CodeSuggestion[] {
