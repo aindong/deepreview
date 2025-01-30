@@ -1,6 +1,7 @@
 {
   "name": "deepreview",
   "version": "1.1.0",
+  "type": "commonjs",
   "description": "AI-powered CLI for code reviews and PR generation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,6 +38,10 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@types/inquirer": "^9.0.7",
+    "envfile": "^7.1.0",
+    "fs-extra": "^11.3.0",
+    "inquirer": "^12.3.3",
     "openai": "^4.81.0"
   }
 }

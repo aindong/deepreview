@@ -1,19 +1,26 @@
 import OpenAI from 'openai';
 import { CodeReviewComments } from './interfaces';
 import { parseAiResponse } from './parser';
+import { getApiKey } from './config';
 
-const AI_API_KEY = process.env.AI_API_KEY;
+let client: OpenAI | null = null;
 
-const client = new OpenAI({
-  apiKey: AI_API_KEY,
-  // baseURL: 'https://api.deepseek.com' // Replace with actual URL if different
-});
+async function getClient(): Promise<OpenAI> {
+  if (!client) {
+    client = new OpenAI({
+      apiKey: await getApiKey(),
+      // baseURL: 'https://api.deepseek.com' // Uncomment if using DeepSeek
+    });
+  }
+  return client;
+}
 
 const systemPrompt = "Act as a Senior Software Engineer performing a code review for submitted pull requests. Your goal is to ensure the code stays relevant, adheres to established code styles, and helps detect potential bugs early. Also provide detailed summary of the code changes and any potential issues."
 
 export async function queryLLM(prompt: string, code: string): Promise<string> {
   try {
-    const completion = await client.chat.completions.create({
+    const openai = await getClient();
+    const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
@@ -49,8 +56,9 @@ export async function streamAiResponse(
   onProgress: (chunk: string) => void
 ): Promise<string> {
   try {
+    const openapi = await getClient();
     const content = code ? `${prompt}\n\nCode:\n\`\`\`\n${code}\n\`\`\`` : prompt;
-    const stream = await client.chat.completions.create({
+    const stream = await openapi.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {

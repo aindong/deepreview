@@ -15,6 +15,20 @@ A intelligent CLI tool that leverages AI for code analysis, pull request generat
 npm install -g deepreview
 ```
 
+## First Time Setup
+
+After installation, run:
+```bash
+deepreview setup
+```
+
+You'll be prompted to enter your OpenAI/DeepSeek API key. This will be stored securely in your home directory at `~/.deepreview/.env`.
+
+To update your API key later:
+```bash
+deepreview setup
+```
+
 ## Usage 🚀
 
 ### Analyze Code Quality
