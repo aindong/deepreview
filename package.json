@@ -1,6 +1,6 @@
 {
   "name": "deepreview",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "type": "commonjs",
   "description": "AI-powered CLI for code reviews and PR generation",
   "main": "dist/index.js",
